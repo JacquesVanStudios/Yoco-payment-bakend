@@ -14,10 +14,20 @@ let tokens = {
 
 // 1️⃣ OAuth Authorization Endpoint
 app.get('/oauth/authorize', (req, res) => {
-  // Simulate user consent and redirect with code
-  const redirectUri = req.query.redirect_uri;
-  const authCode = 'mock_auth_code_abc';
-  return res.redirect(`${redirectUri}?code=${authCode}`);
+  const { client_id, redirect_uri, response_type, state } = req.query;
+
+  if (!client_id || !redirect_uri || !response_type || !state) {
+    return res.status(400).json({
+      message: 'Missing required parameters',
+      error: 'Bad Request',
+      statusCode: 400
+    });
+  }
+
+  const mockAuthCode = 'mock_auth_code_abc';
+  const redirectWithCode = `${redirect_uri}?code=${mockAuthCode}&state=${state}`;
+
+  return res.redirect(redirectWithCode);
 });
 
 // 2️⃣ Access Token Exchange Endpoint
